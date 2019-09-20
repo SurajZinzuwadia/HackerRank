@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[17]:
-
-
 import string
 N = int(input())
 mid = N - 1
@@ -17,10 +11,3 @@ for i in range(0, N):
     for j in range(0, N - i):
         row[mid - j] = row[mid + j] = string.ascii_lowercase[j + i]
     print ('-'.join(row))
-
-
-# In[ ]:
-
-
-
-
