@@ -14,14 +14,23 @@ def printNode(head):
             print(temp.data)
             temp = temp.next
 
-def insertNodeAtHead(head, data):
-	node = SinglyLinkedListNode(data)
+def insertNodeAtHead( head, data):
+	# node = SinglyLinkedListNode(data)
+    # if head:
+    #     node.next = head
+    #     head = node
+    # else:
+    #     head = node
+    # return head
+    node = SinglyLinkedListNode(data)
     if head:
         node.next = head
         head = node
     else:
         head = node
     return head
+
+
 
 if __name__ == '__main__':
     llist_count = int(input())
@@ -32,6 +41,4 @@ if __name__ == '__main__':
         llist_item = int(input())
         llist_head = insertNodeAtHead(llist.head, llist_item)
         llist.head = llist_head
-        print(llist.head.data)
     printNode(llist.head)
-

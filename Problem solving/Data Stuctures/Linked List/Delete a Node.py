@@ -1,3 +1,11 @@
+#!/bin/python3
+
+import math
+import os
+import random
+import re
+import sys
+
 class SinglyLinkedListNode:
     def __init__(self, node_data):
         self.data = node_data
@@ -19,30 +27,27 @@ class SinglyLinkedList:
 
         self.tail = node
 
+
 def printNode(head):
     temp = head
     while (temp != None):
         print(temp.data)
         temp = temp.next
 
-
-def insertNodeAtPosition(head, data, position):
-    prev_node = head
+def deleteNode(head, position):
+    prev_node = None
+    node = head
     if position == 0:
-        new_node = SinglyLinkedListNode(data)
-        new_node.next = head
-        return new_node
-    while prev_node is not None:
-        new_node = SinglyLinkedListNode(data)
-
-        for _ in range(position-1):
-            if prev_node.next is not None:
-                prev_node = prev_node.next
-        new_node.next = prev_node.next
-        prev_node.next = new_node
+        head = node.next
         return head
 
-
+    while node is not None:
+        for _ in range(position):
+            if node.next is not None:
+                prev_node = node
+                node = node.next
+        prev_node.next = node.next
+        return head
 if __name__ == '__main__':
 
     llist_count = int(input())
@@ -53,10 +58,8 @@ if __name__ == '__main__':
         llist_item = int(input())
         llist.insert_node(llist_item)
 
-    data = int(input())
-
     position = int(input())
 
-    llist_head = insertNodeAtPosition(llist.head, data, position)
+    llist1 = deleteNode(llist.head, position)
 
-    printNode(llist_head)
+    printNode(llist1)
