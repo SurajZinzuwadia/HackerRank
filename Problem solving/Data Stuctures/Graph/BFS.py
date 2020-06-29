@@ -37,6 +37,7 @@ class Graph:
                     visited[v] = True
                     level[v] = level[u] + 1
                     queue.put(v)
+        print(level)
         print(bfs_traversal_output)
 
 

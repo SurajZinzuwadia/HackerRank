@@ -19,7 +19,7 @@ class Graph:
         dfs_output = []
         for node in self.adj_list.keys():
             visited[node] = False
-        s = 0
+        s = 1
         visited[s] = True
         stack.append(s)
         while len(stack)!=0:
@@ -39,9 +39,9 @@ class Graph:
 
 
 if __name__ == "__main__":
-    V  = [0,1,2,3,4]
+    V  = [1,2,3,4,5,6]
     graph = Graph(V)
-    all_edges = [  (0,1) ,(0,2) ,(1,2) ,(2,0) ,(2,3) ]
+    all_edges = [  (1,2) ,(2,3) ,(2, 6) ,(6, 4)  ,(6,5) ]
     for u,v in all_edges:
         graph.add_edge(u,v)
     graph.DFS()
