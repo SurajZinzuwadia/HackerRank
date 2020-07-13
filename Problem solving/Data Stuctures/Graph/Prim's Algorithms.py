@@ -1,4 +1,4 @@
-
+# Prim is not completed yet. Should learn basic concepts of Heap
 class Graph:
     def __init__(self,Nodes, is_directed = False):
         self.nodes = Nodes
@@ -16,7 +16,7 @@ class Graph:
         for node in self.nodes:
             print(node, "->" , self.adj_list[node])
 
-    def BellmanFord(self,s):
+    def prim(self,s):
         dist = [float("Inf")] * len(self.adj_list)
         dist[s] = 0
 
@@ -35,4 +35,4 @@ if __name__ == "__main__":
     for u,v,w in all_edges:
         graph.add_edge(u,v,w)
     graph.print_adj_list()
-    graph.BellmanFord(0)
+    graph.prim(0)

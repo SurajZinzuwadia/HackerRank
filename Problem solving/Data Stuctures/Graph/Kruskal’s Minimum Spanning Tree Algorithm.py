@@ -1,56 +1,177 @@
+# from collections import defaultdict
+# #
+# # n, m = map(int, input().split())
+# #
+# # edges = []
+# # parent = [i for i in range(n)]
+# #
+# # for _ in range(m):
+# #     a, b, c = map(int, input().split())
+# #     edges.append((a - 1, b - 1, c))
+# #
+# #
+# # def find(i):
+# #     while i != parent[parent[i]]:
+# #         parent[i] = parent[parent[i]]
+# #         i = parent[i]
+# #     return i
+# #
+# #
+# # def union(x, y):
+# #     p_x = find(x)
+# #     p_y = find(y)
+# #     parent[p_y] = p_x
+# #
+# #
+# # def is_connected(x, y):
+# #     p_x = find(x)
+# #     p_y = find(y)
+# #     return p_x == p_y
+# #
+# #
+# # # build MST
+# # tree = defaultdict(list)
+# #
+# # edges.sort(key=lambda x: x[2])
+# # print(edges)
+# # for a, b, c in edges:
+# #     if not is_connected(a, b):
+# #         union(a, b)
+# #         tree[a].append((b, c))
+# #         tree[b].append((a, c))
+# # print(tree)
+# # ans = [0] * (2 * m)
+# #
+# #
+# # # Run DFS to count the number of times an edge is used
+# # # as weights of all edges is different, hence each weight maps to a particular children
+# # def dfs(src, p=-1):
+# #     total = 1
+# #     for v, c in tree[src]:
+# #         if v != p:
+# #             children = dfs(v, src)
+# #
+# #             # children => nodes right to edge, n - children => nodes left to edge
+# #             ans[c] += (n - children) * children
+# #
+# #             total += children
+# #     return total
+# #
+# #
+# # dfs(0)
+# #
+# # res = 0
+# # for i in range(len(ans)):
+# #     res += ans[i] * (1 << i)
+# #
+# # print(str(bin(res))[2:])
 
+# Python program for Kruskal's algorithm to find
+# Minimum Spanning Tree of a given connected,
+# undirected and weighted graph
+
+from collections import defaultdict
+
+
+# Class to represent a graph
 class Graph:
-    def __init__(self,Nodes, is_directed = False):
-        self.nodes = Nodes
-        self.adj_list = []
-        self.is_directed = is_directed
 
-    def add_edge(self,u,v,w):
-        self.adj_list.append([u,v,w])
-        # if not self.is_directed:
-        #     self.adj_list.append([v,u,w])
+    def __init__(self, vertices):
+        self.V = vertices  # No. of vertices
+        self.graph = []  # default dictionary
 
-    def print_adj_list(self):
-        for node in self.nodes:
-            print(node, "->" , self.adj_list[node])
+    # to store graph
 
-    def find_parents(self,parents,i):
-        if parents[i] == -1:
+    # function to add an edge to graph
+    def addEdge(self, u, v, w):
+        self.graph.append([u, v, w])
+
+    # A utility function to find set of an element i
+    # (uses path compression technique)
+    def find(self, parent, i):
+        if parent[i] == i:
             return i
-        elif parents[i] !=-1:
-            return self.find_parents(parents,parents[i])
+        return self.find(parent, parent[i])
 
-    def union(self,parents,u,v):
-        x_set = self.find_parents(parents,u)
-        y_set = self.find_parents(parents,v)
-        parents[x_set] = y_set
+    # A function that does union of two sets of x and y
+    # (uses union by rank)
+    def union(self, parent, rank, x, y):
+        xroot = self.find(parent, x)
+        yroot = self.find(parent, y)
 
-    def krushkal(self):
-        e = 0
-        i = 0
-        self.adj_list = sorted(self.adj_list, key=lambda item: item[2])
-        print(self.adj_list)
-        result = []
-        parents = [-1] * len(self.nodes)
-        while e < len(self.nodes)-1:
-            u,v,w = self.adj_list[i]
-            i=i+1
-            x = self.find_parents(parents,u)
-            y = self.find_parents(parents,v)
-            if (x!=y):
+        # Attach smaller rank tree under root of
+        # high rank tree (Union by Rank)
+        if rank[xroot] < rank[yroot]:
+            parent[xroot] = yroot
+        elif rank[xroot] > rank[yroot]:
+            parent[yroot] = xroot
+
+        # If ranks are same, then make one as root
+        # and increment its rank by one
+        else:
+            parent[yroot] = xroot
+            rank[xroot] += 1
+
+    # The main function to construct MST using Kruskal's
+    # algorithm
+    def KruskalMST(self):
+
+        result = []  # This will store the resultant MST
+
+        i = 0  # An index variable, used for sorted edges
+        e = 0  # An index variable, used for result[]
+
+        # Step 1: Sort all the edges in non-decreasing
+        # order of their
+        # weight. If we are not allowed to change the
+        # given graph, we can create a copy of graph
+        self.graph = sorted(self.graph, key=lambda item: item[2])
+
+        parent = [];
+        rank = []
+
+        # Create V subsets with single elements
+        for node in range(self.V):
+            parent.append(node)
+            rank.append(0)
+        print(self.graph)
+        # Number of edges to be taken is equal to V-1
+        while e < self.V - 1:
+
+            # Step 2: Pick the smallest edge and increment
+            # the index for next iteration
+            u, v, w = self.graph[i]
+            i = i + 1
+            x = self.find(parent, u)
+            y = self.find(parent, v)
+            print('x',x,"y",y)
+            # If including this edge does't cause cycle,
+            # include it in result and increment the index
+            # of result for next edge
+            if x != y:
                 e = e + 1
-                result.append([u,v,w])
-                self.union(parents,x,y)
-            print(parents)
-        for u,v,weight  in result:
-            print ("%d -- %d == %d" % (u,v,weight))
+                result.append([u, v, w])
+                self.union(parent, rank, x, y)
+            # Else discard the edge
+            print("parent",parent)
+            print("rank",rank)
+        # print the contents of result[] to display the built MST
+        print
+        "Following are the edges in the constructed MST"
+        for u, v, weight in result:
+            # print str(u) + " -- " + str(v) + " == " + str(weight)
+            print("%d -- %d == %d" % (u, v, weight))
+
+        # Driver code
 
 
-if __name__ == "__main__":
-    V  = [0,1,2,3]
-    graph = Graph(V)
-    all_edges = [ (0, 1, 10)  ,(0, 2, 6)  , (0,3,5)  , (1,3,15) , (2,3,4)  ]
-    for u,v,w in all_edges:
-        graph.add_edge(u,v,w)
-    # graph.print_adj_list()
-    graph.krushkal()
+g = Graph(4)
+g.addEdge(0, 1, 10)
+g.addEdge(0, 2, 6)
+g.addEdge(0, 3, 5)
+g.addEdge(1, 3, 15)
+g.addEdge(2, 3, 4)
+
+g.KruskalMST()
+
+# This code is contributed by Neelam Yadav
